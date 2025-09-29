@@ -3,137 +3,1190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numeric Converter</title>
+    <title>Location & Health Services</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        select, input, button {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        button {
-            background-color: #4CAF50;
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
             border: none;
             cursor: pointer;
-            padding: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
         }
+        
+        .tab.active {
+            background: white;
+            color: #4CAF50;
+            border-bottom: 3px solid #4CAF50;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
         button:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
         }
+        
+        button.secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        }
+        
+        button.secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+        
         .result {
             margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #f9f9f9;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+            display: none;
         }
+        
+        .result.show {
+            display: block;
+        }
+        
         .error {
-            color: red;
+            color: #dc3545;
             margin-top: 10px;
+            padding: 10px;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            opacity: 0.9;
+        }
+        
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .search-item {
+            padding: 15px;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .search-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .search-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-item h4 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .search-item p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .json-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .section-title {
+            color: #495057;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .location-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .location-info h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .health-ranking {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .health-ranking h4 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        .health-metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .health-score {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .health-score.excellent {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+        
+        .health-score.good {
+            background: linear-gradient(135deg, #8BC34A 0%, #689F38 100%);
+        }
+        
+        .health-score.fair {
+            background: linear-gradient(135deg, #FFC107 0%, #FF8F00 100%);
+        }
+        
+        .health-score.poor {
+            background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+        }
+        
+        .details-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .details-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(33, 150, 243, 0.3);
+        }
+        
+        .health-ranking-row {
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .health-ranking-row:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        
+        .close:hover {
+            opacity: 0.7;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .health-measures-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .health-measures-table th,
+        .health-measures-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .health-measures-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .health-measures-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .value-cell {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        
+        .pagination-info {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .pagination-btn {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .pagination-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .page-info {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .health-score-display {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+        }
+        
+        .health-score-display h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+        
+        .health-score-display .health-score {
+            font-size: 1.5em;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Numeric Converter</h1>
-        <div class="form-group">
-            <label for="input">Input Value:</label>
-            <input type="text" id="input" placeholder="Enter value to convert">
+    <div class="main-container">
+        <div class="header">
+            <h1>🗺️ Location & Health Services</h1>
+            <p>Explore location data, ZIP code lookups, and health rankings across the United States</p>
         </div>
-        <div class="form-group">
-            <label for="inputType">Input Type:</label>
-            <select id="inputType">
-                <option value="text">English Text</option>
-                <option value="binary">Binary</option>
-                <option value="octal">Octal</option>
-                <option value="decimal">Decimal</option>
-                <option value="hexadecimal">Hexadecimal</option>
-                <option value="base64">Base64</option>
-            </select>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('location')">📍 Location Services</button>
+            <button class="tab" onclick="showTab('analytics')">📊 Analytics</button>
         </div>
-        <div class="form-group">
-            <label for="outputType">Output Type:</label>
-            <select id="outputType">
-                <option value="text">English Text</option>
-                <option value="binary">Binary</option>
-                <option value="octal">Octal</option>
-                <option value="decimal">Decimal</option>
-                <option value="hexadecimal">Hexadecimal</option>
-                <option value="base64">Base64</option>
-            </select>
+
+        <!-- Location Services Tab -->
+        <div id="location" class="tab-content active">
+            <h2 class="section-title">ZIP Code Lookup</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="zipCode">ZIP Code:</label>
+                    <input type="text" id="zipCode" placeholder="Enter ZIP code (e.g., 10001)" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <button onclick="lookupZip()">🔍 Lookup ZIP</button>
+                </div>
+            </div>
+
+            <h2 class="section-title">Location Search</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="searchQuery">Search Query:</label>
+                    <input type="text" id="searchQuery" placeholder="Search for counties, states, metro areas...">
+                </div>
+                <div class="form-group">
+                    <label for="searchType">Search Type:</label>
+                    <select id="searchType">
+                        <option value="all">All Types</option>
+                        <option value="zip">ZIP Codes</option>
+                        <option value="county">Counties</option>
+                        <option value="metro">Metro Areas</option>
+                        <option value="state">States</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button onclick="searchLocations()">🔍 Search</button>
+                </div>
+            </div>
+
+            <h2 class="section-title">Quick Access</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <button onclick="loadStates()" class="secondary">📋 View All States</button>
+                    <button onclick="loadCities()" class="secondary">🏙️ View Cities</button>
+                    <button onclick="loadHealthRankings()" class="secondary">🏥 Health Rankings</button>
+                </div>
+            </div>
+
+            <div id="locationResult" class="result"></div>
+            <div id="locationError" class="error"></div>
         </div>
-        <button onclick="convert()">Convert</button>
-        <div id="result" class="result" style="display: none;"></div>
-        <div id="error" class="error" style="display: none;"></div>
+
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <h2 class="section-title">Location Analytics</h2>
+            <button onclick="loadAnalytics()">📈 Load Analytics</button>
+            <div id="analyticsResult" class="result"></div>
+            <div id="analyticsError" class="error"></div>
+        </div>
+    </div>
+
+    <!-- Health Details Modal -->
+    <div id="healthModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Health Details</h2>
+                <span class="close" onclick="closeHealthModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        async function convert() {
-            const input = document.getElementById('input').value;
-            const inputType = document.getElementById('inputType').value;
-            const outputType = document.getElementById('outputType').value;
-            const resultDiv = document.getElementById('result');
-            const errorDiv = document.getElementById('error');
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
 
-            // Hide both result and error initially
-            resultDiv.style.display = 'none';
-            errorDiv.style.display = 'none';
+        // Location Services Functions
+        async function lookupZip() {
+            const zipCode = document.getElementById('zipCode').value.trim();
+            const resultDiv = document.getElementById('locationResult');
+            const errorDiv = document.getElementById('locationError');
+            
+            if (!zipCode) {
+                showError(errorDiv, 'Please enter a ZIP code');
+                return;
+            }
+
+            showLoading(resultDiv);
+            hideError(errorDiv);
 
             try {
-                const response = await fetch('/convert', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        input: input,
-                        inputType: inputType,
-                        outputType: outputType
-                    })
-                });
-
+                const response = await fetch(`/api/location/zip/${zipCode}`);
                 const data = await response.json();
                 
-                if (data.error) {
-                    errorDiv.textContent = data.error;
-                    errorDiv.style.display = 'block';
+                if (data.success) {
+                    displayZipResult(data.data, resultDiv);
                 } else {
-                    resultDiv.textContent = `Result: ${data.result}`;
-                    resultDiv.style.display = 'block';
+                    showError(errorDiv, data.error || 'ZIP code not found');
                 }
             } catch (error) {
-                errorDiv.textContent = 'An error occurred during conversion.';
-                errorDiv.style.display = 'block';
+                showError(errorDiv, 'Error looking up ZIP code');
             }
         }
+
+        async function searchLocations() {
+            const query = document.getElementById('searchQuery').value.trim();
+            const type = document.getElementById('searchType').value;
+            const resultDiv = document.getElementById('locationResult');
+            const errorDiv = document.getElementById('locationError');
+            
+            if (!query) {
+                showError(errorDiv, 'Please enter a search query');
+                return;
+            }
+
+            showLoading(resultDiv);
+            hideError(errorDiv);
+
+            try {
+                const response = await fetch(`/api/location/search?q=${encodeURIComponent(query)}&type=${type}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displaySearchResults(data, resultDiv);
+                } else {
+                    showError(errorDiv, data.error || 'Search failed');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error searching locations');
+            }
+        }
+
+        async function loadStates() {
+            const resultDiv = document.getElementById('locationResult');
+            const errorDiv = document.getElementById('locationError');
+            
+            showLoading(resultDiv);
+            hideError(errorDiv);
+
+            try {
+                const response = await fetch('/api/location/states');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayStates(data.data, resultDiv);
+                } else {
+                    showError(errorDiv, data.error || 'Failed to load states');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error loading states');
+            }
+        }
+
+        async function loadCities() {
+            const resultDiv = document.getElementById('locationResult');
+            const errorDiv = document.getElementById('locationError');
+            
+            showLoading(resultDiv);
+            hideError(errorDiv);
+
+            try {
+                const response = await fetch('/api/location/cities?limit=50');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCities(data.data, resultDiv);
+                } else {
+                    showError(errorDiv, data.error || 'Failed to load cities');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error loading cities');
+            }
+        }
+
+        let currentPage = 1;
+        const perPage = 20;
+        
+        async function loadHealthRankings(page = 1) {
+            const resultDiv = document.getElementById('locationResult');
+            const errorDiv = document.getElementById('locationError');
+            
+            showLoading(resultDiv);
+            hideError(errorDiv);
+            currentPage = page;
+
+            try {
+                const response = await fetch(`/api/health_rankings?page=${page}&per_page=${perPage}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayHealthRankings(data, resultDiv);
+                } else {
+                    showError(errorDiv, data.error || 'Failed to load health rankings');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error loading health rankings');
+            }
+        }
+
+        async function loadAnalytics() {
+            const resultDiv = document.getElementById('analyticsResult');
+            const errorDiv = document.getElementById('analyticsError');
+            
+            showLoading(resultDiv);
+            hideError(errorDiv);
+
+            try {
+                const response = await fetch('/api/location/analytics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayAnalytics(data.data, resultDiv);
+                } else {
+                    showError(errorDiv, data.error || 'Failed to load analytics');
+                }
+            } catch (error) {
+                showError(errorDiv, 'Error loading analytics');
+            }
+        }
+
+        // Display Functions
+        function displayZipResult(data, container) {
+            let html = `
+                <div class="location-info">
+                    <h3>📍 ZIP Code: ${data.zip_code}</h3>
+                    <p><strong>County:</strong> ${data.location.county}</p>
+                    <p><strong>State:</strong> ${data.location.state}</p>
+                    <p><strong>City:</strong> ${data.location.default_city}</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>${data.statistics.total_zips_in_county}</h3>
+                        <p>ZIPs in County</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${data.statistics.total_zips_in_city}</h3>
+                        <p>ZIPs in City</p>
+                    </div>
+                </div>
+            `;
+
+            if (data.health_rankings && data.health_rankings.length > 0) {
+                html += `
+                    <div class="health-ranking">
+                        <h4>🏥 Health Rankings & Metrics</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Health Measure</th>
+                                    <th>Value</th>
+                                    <th>Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                data.health_rankings.forEach(measure => {
+                    const value = measure.Raw_value ? parseFloat(measure.Raw_value).toFixed(2) : 'N/A';
+                    html += `
+                        <tr>
+                            <td><strong>${measure.Measure_name}</strong></td>
+                            <td>${value}</td>
+                            <td>${measure.Year_span || measure.Data_Release_Year || 'N/A'}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            if (data.county_zips && data.county_zips.length > 0) {
+                html += `
+                    <h4>ZIP Codes in ${data.location.county}:</h4>
+                    <p>${data.county_zips.join(', ')}</p>
+                `;
+            }
+
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        function displaySearchResults(data, container) {
+            let html = `<h3>🔍 Search Results for "${data.query}" (${data.count} found)</h3>`;
+            
+            if (data.data.length === 0) {
+                html += '<p>No results found.</p>';
+            } else {
+                html += '<div class="search-results">';
+                data.data.forEach(item => {
+                    html += `
+                        <div class="search-item" onclick="selectSearchItem('${item.type}', '${item.name}')">
+                            <h4>${item.name} (${item.description})</h4>
+                            <p>${getSearchItemDetails(item)}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        function displayStates(data, container) {
+            let html = '<h3>📋 All States</h3><table class="data-table"><thead><tr><th>State</th><th>Counties</th><th>Cities</th><th>ZIP Codes</th></tr></thead><tbody>';
+            
+            data.forEach(state => {
+                html += `
+                    <tr>
+                        <td><strong>${state.state}</strong></td>
+                        <td>${state.county_count}</td>
+                        <td>${state.city_count}</td>
+                        <td>${state.zip_count}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        function displayCities(data, container) {
+            let html = '<h3>🏙️ Cities</h3><table class="data-table"><thead><tr><th>City</th><th>Counties</th><th>States</th><th>ZIP Codes</th></tr></thead><tbody>';
+            
+            data.forEach(city => {
+                html += `
+                    <tr>
+                        <td><strong>${city.city}</strong></td>
+                        <td>${city.county_count}</td>
+                        <td>${city.state_count}</td>
+                        <td>${city.zip_count}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        function displayHealthRankings(data, container) {
+            const startRank = (data.page - 1) * data.per_page + 1;
+            
+            let html = `
+                <h3>🏥 Health Rankings</h3>
+                <div class="pagination-info">
+                    <p>Showing ${data.count} of ${data.total} counties (Page ${data.page} of ${data.total_pages})</p>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>County</th>
+                            <th>State</th>
+                            <th>Health Score</th>
+                            <th>Measures</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            data.data.forEach((ranking, index) => {
+                const score = ranking.health_score || 0;
+                const scoreClass = score >= 80 ? 'excellent' : score >= 60 ? 'good' : score >= 40 ? 'fair' : 'poor';
+                const scoreText = score > 0 ? `${score}/100` : 'No Data';
+                const globalRank = startRank + index;
+                
+                html += `
+                    <tr class="health-ranking-row">
+                        <td><strong>#${globalRank}</strong></td>
+                        <td><strong>${ranking.county}</strong></td>
+                        <td>${ranking.state}</td>
+                        <td><span class="health-score ${scoreClass}">${scoreText}</span></td>
+                        <td>${ranking.measure_count}</td>
+                        <td><button class="details-btn" onclick="loadCountyHealthDetails('${ranking.county}', '${ranking.state}')">View Details</button></td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            
+            // Add pagination controls
+            if (data.total_pages > 1) {
+                html += '<div class="pagination-controls">';
+                
+                if (data.page > 1) {
+                    html += `<button onclick="loadHealthRankings(${data.page - 1})" class="pagination-btn">← Previous</button>`;
+                }
+                
+                html += `<span class="page-info">Page ${data.page} of ${data.total_pages}</span>`;
+                
+                if (data.page < data.total_pages) {
+                    html += `<button onclick="loadHealthRankings(${data.page + 1})" class="pagination-btn">Next →</button>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        function displayAnalytics(data, container) {
+            let html = '<h3>📊 Location Analytics</h3>';
+            
+            // Geographic Distribution
+            html += '<h4>Geographic Distribution by State</h4>';
+            html += '<div class="stats-grid">';
+            data.geographic_distribution.forEach(state => {
+                html += `
+                    <div class="stat-card">
+                        <h3>${state.state}</h3>
+                        <p>${state.county_count} counties</p>
+                        <p>${state.zip_count} ZIP codes</p>
+                        <p>${state.city_count} cities</p>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            // Top Cities
+            html += '<h4>Top Cities</h4>';
+            html += '<table class="data-table"><thead><tr><th>City</th><th>Counties</th><th>States</th><th>ZIP Codes</th></tr></thead><tbody>';
+            data.top_cities.forEach(city => {
+                html += `
+                    <tr>
+                        <td><strong>${city.city}</strong></td>
+                        <td>${city.county_count}</td>
+                        <td>${city.state_count}</td>
+                        <td>${city.zip_count}</td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+
+            // Health Data by State
+            html += '<h4>Health Data by State</h4>';
+            html += '<table class="data-table"><thead><tr><th>State</th><th>Counties with Health Data</th><th>Total Health Records</th></tr></thead><tbody>';
+            data.health_by_state.forEach(health => {
+                html += `
+                    <tr>
+                        <td><strong>${health.state}</strong></td>
+                        <td>${health.county_count}</td>
+                        <td>${health.health_records} records</td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+
+            container.innerHTML = html;
+            container.classList.add('show');
+        }
+
+        // Helper Functions
+        function getSearchItemDetails(item) {
+            let details = [];
+            if (item.county) details.push(`County: ${item.county}`);
+            if (item.state) details.push(`State: ${item.state}`);
+            if (item.metro_area) details.push(`Metro: ${item.metro_area}`);
+            if (item.zip_count) details.push(`ZIPs: ${item.zip_count}`);
+            return details.join(' • ');
+        }
+
+        function selectSearchItem(type, name) {
+            if (type === 'zip') {
+                document.getElementById('zipCode').value = name;
+                lookupZip();
+            } else if (type === 'county') {
+                // Could implement county details lookup
+                alert(`Selected county: ${name}`);
+            }
+        }
+
+        function showLoading(container) {
+            container.innerHTML = '<div class="loading">⏳ Loading...</div>';
+            container.classList.add('show');
+        }
+
+        function showError(errorDiv, message) {
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError(errorDiv) {
+            errorDiv.classList.remove('show');
+        }
+
+
+        // Health Details Modal Functions
+        async function loadCountyHealthDetails(county, state) {
+            const modal = document.getElementById('healthModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = `🏥 Loading Health Details - ${county}, ${state}`;
+            modalContent.innerHTML = '<p>Loading health data...</p>';
+            modal.style.display = 'block';
+            
+            try {
+                const response = await fetch(`/api/health_rankings/${encodeURIComponent(county)}/${encodeURIComponent(state)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showHealthDetails(county, state, data.data.health_measures, data.data.health_score);
+                } else {
+                    modalContent.innerHTML = '<p>Error loading health data: ' + (data.error || 'Unknown error') + '</p>';
+                }
+            } catch (error) {
+                modalContent.innerHTML = '<p>Error loading health data: ' + error.message + '</p>';
+            }
+        }
+        
+        function showHealthDetails(county, state, healthMeasures, healthScore = null) {
+            const modal = document.getElementById('healthModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = `🏥 Health Details - ${county}, ${state}`;
+            
+            let measures = [];
+            if (Array.isArray(healthMeasures)) {
+                measures = healthMeasures;
+            } else if (typeof healthMeasures === 'string') {
+                try {
+                    measures = JSON.parse(healthMeasures);
+                } catch (e) {
+                    measures = [];
+                }
+            }
+            
+            if (measures.length === 0) {
+                modalContent.innerHTML = '<p>No health data available for this county.</p>';
+            } else {
+                let html = `
+                    <div class="health-score-display">
+                        <h3>Health Score: <span class="health-score ${getScoreClass(healthScore)}">${healthScore || 'N/A'}/100</span></h3>
+                    </div>
+                    <h3>Health Metrics & Rankings</h3>
+                    <table class="health-measures-table">
+                        <thead>
+                            <tr>
+                                <th>Health Measure</th>
+                                <th>Value</th>
+                                <th>Year</th>
+                                <th>Interpretation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                measures.forEach(measure => {
+                    const value = measure.Raw_value ? parseFloat(measure.Raw_value).toFixed(2) : 'N/A';
+                    const interpretation = getHealthInterpretation(measure.Measure_name, value);
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${measure.Measure_name}</strong></td>
+                            <td class="value-cell">${value}</td>
+                            <td>${measure.Year_span || measure.Data_Release_Year || 'N/A'}</td>
+                            <td>${interpretation}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                modalContent.innerHTML = html;
+            }
+            
+            modal.style.display = 'block';
+        }
+        
+        function getScoreClass(score) {
+            if (!score) return 'poor';
+            if (score >= 80) return 'excellent';
+            if (score >= 60) return 'good';
+            if (score >= 40) return 'fair';
+            return 'poor';
+        }
+        
+        function closeHealthModal() {
+            document.getElementById('healthModal').style.display = 'none';
+        }
+        
+        function getHealthInterpretation(measureName, value) {
+            if (value === 'N/A') return 'No data available';
+            
+            const numValue = parseFloat(value);
+            
+            switch(measureName) {
+                case 'Adult obesity':
+                    if (numValue < 0.2) return '🟢 Excellent (Low obesity)';
+                    if (numValue < 0.3) return '🟡 Good (Moderate obesity)';
+                    return '🔴 Poor (High obesity)';
+                    
+                case 'Physical inactivity':
+                    if (numValue < 0.2) return '🟢 Excellent (Active population)';
+                    if (numValue < 0.3) return '🟡 Good (Moderately active)';
+                    return '🔴 Poor (Inactive population)';
+                    
+                case 'Children in poverty':
+                    if (numValue < 0.15) return '🟢 Excellent (Low poverty)';
+                    if (numValue < 0.25) return '🟡 Good (Moderate poverty)';
+                    return '🔴 Poor (High poverty)';
+                    
+                case 'Unemployment':
+                    if (numValue < 0.05) return '🟢 Excellent (Low unemployment)';
+                    if (numValue < 0.08) return '🟡 Good (Moderate unemployment)';
+                    return '🔴 Poor (High unemployment)';
+                    
+                case 'Violent crime rate':
+                    if (numValue < 200) return '🟢 Excellent (Low crime)';
+                    if (numValue < 400) return '🟡 Good (Moderate crime)';
+                    return '🔴 Poor (High crime)';
+                    
+                case 'Uninsured':
+                    if (numValue < 0.1) return '🟢 Excellent (Low uninsured)';
+                    if (numValue < 0.15) return '🟡 Good (Moderate uninsured)';
+                    return '🔴 Poor (High uninsured)';
+                    
+                case 'Preventable hospital stays':
+                    if (numValue < 30) return '🟢 Excellent (Low preventable stays)';
+                    if (numValue < 50) return '🟡 Good (Moderate preventable stays)';
+                    return '🔴 Poor (High preventable stays)';
+                    
+                default:
+                    return '📊 Data available';
+            }
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('healthModal');
+            if (event.target === modal) {
+                closeHealthModal();
+            }
+        }
+        
+        // Auto-load analytics on page load
+        window.addEventListener('load', function() {
+            loadAnalytics();
+        });
     </script>
 </body>
 </html>
