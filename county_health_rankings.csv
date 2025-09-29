@@ -1,0 +1,6 @@
+fips,state,county,health_outcomes_rank,health_factors_rank,length_of_life_rank,quality_of_life_rank,health_behaviors_rank,clinical_care_rank,social_economic_factors_rank,physical_environment_rank
+36061,NY,New York County,1,1,1,1,1,1,1,1
+6037,CA,Los Angeles County,15,25,20,10,30,15,25,20
+17031,IL,Cook County,8,12,5,15,18,8,12,15
+48201,TX,Harris County,22,28,25,18,35,22,28,25
+12086,FL,Miami-Dade County,18,22,20,16,25,18,22,20
