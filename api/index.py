@@ -75,8 +75,7 @@ def county_data_post():
         cursor = conn.cursor()
         
         # First, find the county and state for this ZIP code
-        # Try both possible column names (zip or col__zip) for compatibility
-        # Check which column exists first
+        # Check which column exists (zip or col__zip) for compatibility
         cursor.execute("PRAGMA table_info(zip_county)")
         columns = [col[1] for col in cursor.fetchall()]
         zip_col = 'zip' if 'zip' in columns else 'col__zip'

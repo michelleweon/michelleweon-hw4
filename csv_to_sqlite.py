@@ -27,8 +27,9 @@ def create_table_from_csv(cursor, csv_file, table_name):
         csv_file: Path to the CSV file
         table_name: Name for the SQLite table
     """
-    with open(csv_file, 'r', newline='', encoding='utf-8') as file:
+    with open(csv_file, 'r', newline='', encoding='utf-8-sig') as file:
         # Read the first row to get column names
+        # utf-8-sig automatically handles BOM (Byte Order Mark)
         reader = csv.reader(file)
         headers = next(reader)
         
