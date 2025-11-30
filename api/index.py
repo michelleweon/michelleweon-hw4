@@ -22,6 +22,133 @@ def index():
 # COUNTY DATA API ENDPOINTS
 # =============================================================================
 
+@app.route('/county_data', methods=['POST'])
+def county_data_post():
+    """
+    County data endpoint that accepts POST with JSON body.
+    Required: zip (5-digit), measure_name
+    Returns health rankings data for the county matching the ZIP code.
+    """
+    try:
+        # Check for teapot error first (418)
+        if request.is_json:
+            data = request.get_json()
+            if data and 'coffee' in data and data['coffee'] == 'teapot':
+                return jsonify({'error': 'I\'m a teapot'}), 418
+        
+        # Get JSON data
+        if not request.is_json:
+            return jsonify({'error': 'Content-Type must be application/json'}), 400
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'Invalid JSON'}), 400
+        
+        # Check for required fields
+        zip_code = data.get('zip')
+        measure_name = data.get('measure_name')
+        
+        if not zip_code or not measure_name:
+            return jsonify({'error': 'Missing required fields: zip and measure_name'}), 400
+        
+        # Validate measure_name is one of the allowed values
+        allowed_measures = [
+            'Violent crime rate',
+            'Unemployment',
+            'Children in poverty',
+            'Diabetic screening',
+            'Mammography screening',
+            'Preventable hospital stays',
+            'Uninsured',
+            'Sexually transmitted infections',
+            'Physical inactivity',
+            'Adult obesity',
+            'Premature Death',
+            'Daily fine particulate matter'
+        ]
+        
+        if measure_name not in allowed_measures:
+            return jsonify({'error': 'Invalid measure_name'}), 400
+        
+        # Connect to database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # First, find the county and state for this ZIP code
+        # Try both possible column names (zip or col__zip) for compatibility
+        # Check which column exists first
+        cursor.execute("PRAGMA table_info(zip_county)")
+        columns = [col[1] for col in cursor.fetchall()]
+        zip_col = 'zip' if 'zip' in columns else 'col__zip'
+        
+        zip_query = f"""
+            SELECT county, state_abbreviation 
+            FROM zip_county 
+            WHERE {zip_col} = ?
+            LIMIT 1
+        """
+        zip_result = cursor.execute(zip_query, [zip_code]).fetchone()
+        
+        if not zip_result:
+            conn.close()
+            return jsonify({'error': 'ZIP code not found'}), 404
+        
+        county = zip_result['county']
+        state = zip_result['state_abbreviation']
+        
+        # Now query health rankings for this county and measure
+        health_query = """
+            SELECT 
+                State as state,
+                County as county,
+                State_code as state_code,
+                County_code as county_code,
+                Year_span as year_span,
+                Measure_name as measure_name,
+                Measure_id as measure_id,
+                Numerator as numerator,
+                Denominator as denominator,
+                Raw_value as raw_value,
+                Confidence_Interval_Lower_Bound as confidence_interval_lower_bound,
+                Confidence_Interval_Upper_Bound as confidence_interval_upper_bound,
+                Data_Release_Year as data_release_year,
+                fipscode as fipscode
+            FROM county_health_rankings
+            WHERE County = ? AND State = ? AND Measure_name = ?
+            ORDER BY Data_Release_Year DESC, Year_span DESC
+        """
+        
+        health_results = cursor.execute(health_query, [county, state, measure_name]).fetchall()
+        conn.close()
+        
+        if not health_results:
+            return jsonify({'error': 'No data found for this ZIP code and measure'}), 404
+        
+        # Convert to list of dictionaries
+        result = []
+        for row in health_results:
+            result.append({
+                'state': row['state'],
+                'county': row['county'],
+                'state_code': row['state_code'],
+                'county_code': row['county_code'],
+                'year_span': row['year_span'],
+                'measure_name': row['measure_name'],
+                'measure_id': row['measure_id'],
+                'numerator': row['numerator'],
+                'denominator': row['denominator'],
+                'raw_value': row['raw_value'],
+                'confidence_interval_lower_bound': row['confidence_interval_lower_bound'],
+                'confidence_interval_upper_bound': row['confidence_interval_upper_bound'],
+                'data_release_year': row['data_release_year'],
+                'fipscode': row['fipscode']
+            })
+        
+        return jsonify(result), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/county_data', methods=['GET'])
 def get_county_data():
     """Get all counties with basic information"""

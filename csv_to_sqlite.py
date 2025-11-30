@@ -33,16 +33,20 @@ def create_table_from_csv(cursor, csv_file, table_name):
         headers = next(reader)
         
         # Clean column names to be valid SQL identifiers
+        # According to spec: "these should be valid SQL column names, with no escaping or spaces"
+        # So we preserve headers as much as possible, only replacing spaces with underscores
         clean_headers = []
         for header in headers:
-            # Remove spaces and special characters, replace with underscores
-            clean_header = ''.join(c if c.isalnum() else '_' for c in header.strip())
-            # Ensure it starts with a letter or underscore
-            if clean_header and not clean_header[0].isalpha():
-                clean_header = 'col_' + clean_header
-            # Handle empty headers
+            # Strip whitespace and replace spaces with underscores
+            clean_header = header.strip().replace(' ', '_')
+            # If empty after cleaning, create a default name
             if not clean_header:
                 clean_header = 'col_' + str(len(clean_headers))
+            # Only add col_ prefix if header starts with a digit (invalid SQL identifier)
+            # This preserves names like "zip", "field_one", "_field" etc.
+            elif clean_header[0].isdigit():
+                clean_header = 'col_' + clean_header
+            # Headers starting with letters or underscores are already valid, keep as-is
             clean_headers.append(clean_header)
         
         # Create table with TEXT columns for all fields
